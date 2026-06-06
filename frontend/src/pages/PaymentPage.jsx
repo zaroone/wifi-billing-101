@@ -84,6 +84,7 @@ export default function PaymentPage() {
   const [delAllOpen, setDelAllOpen] = useState(false);
   const [delAllPw, setDelAllPw] = useState("");
   const [delAllLoading, setDelAllLoading] = useState(false);
+  const [genReport, setGenReport] = useState(null); // {created, skipped, skipped_details}
 
   const loadPeriods = async () => {
     try {
@@ -134,11 +135,19 @@ export default function PaymentPage() {
     setGenerating(true);
     try {
       const r = await generatePayments(periode, genPw);
-      toast.success(`${r.created} data digenerate (${r.skipped} dilewati)`);
+      if (r.created > 0) toast.success(`${r.created} tagihan dibuat`);
       setGenOpen(false);
       setGenPw("");
       load();
       loadPeriods();
+      if (r.skipped > 0 || r.created > 0) {
+        setGenReport({
+          created: r.created,
+          skipped: r.skipped,
+          skipped_details: r.skipped_details || [],
+          periode,
+        });
+      }
     } catch (e) {
       toast.error(e?.response?.data?.detail || "Password salah");
     } finally {
@@ -621,6 +630,53 @@ export default function PaymentPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {/* Generate report */}
+      <Dialog open={!!genReport} onOpenChange={(o) => !o && setGenReport(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Laporan Generate Tagihan</DialogTitle>
+            <DialogDescription>
+              Periode <b>{genReport?.periode}</b> — <span className="text-[#166534] font-semibold">{genReport?.created} dibuat</span>
+              {", "}
+              <span className="text-[#B45309] font-semibold">{genReport?.skipped} dilewati</span>
+            </DialogDescription>
+          </DialogHeader>
+          {genReport?.skipped > 0 ? (
+            <div className="max-h-[420px] overflow-auto border border-stone-200 rounded-md">
+              <table className="w-full text-sm">
+                <thead className="bg-stone-50 sticky top-0">
+                  <tr className="text-left text-stone-600">
+                    <th className="px-3 py-2 font-medium w-10">#</th>
+                    <th className="px-3 py-2 font-medium">Nama Client</th>
+                    <th className="px-3 py-2 font-medium">Nama WiFi</th>
+                    <th className="px-3 py-2 font-medium">Pemilik</th>
+                    <th className="px-3 py-2 font-medium">Alasan Dilewati</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {genReport.skipped_details.map((s, i) => (
+                    <tr key={i} className="border-t border-stone-100" data-testid={`skip-row-${i}`}>
+                      <td className="px-3 py-2 text-stone-500">{i + 1}</td>
+                      <td className="px-3 py-2 font-medium">{s.nama_client}</td>
+                      <td className="px-3 py-2 text-stone-600">{s.nama_wifi || "—"}</td>
+                      <td className="px-3 py-2 text-stone-600">{s.pemilik || "—"}</td>
+                      <td className="px-3 py-2 text-[#B45309]">{s.reason}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-sm text-stone-600">
+              Semua PSB aktif berhasil di-generate. Tidak ada data yang dilewati.
+            </p>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setGenReport(null)} data-testid="close-gen-report">Tutup</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Delete all confirm */}
       <Dialog open={delAllOpen} onOpenChange={setDelAllOpen}>
         <DialogContent className="max-w-sm">

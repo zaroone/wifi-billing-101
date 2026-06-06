@@ -319,6 +319,7 @@ async def generate_payments(req: GenerateRequest):
 
     created = 0
     skipped = 0
+    skipped_details = []
     docs = []
     seen_ids = set()
     seen_keys = set()
@@ -326,20 +327,48 @@ async def generate_payments(req: GenerateRequest):
         psb_id = (p.get("id") or "").strip()
         wifi = (p.get("nama_wifi") or "").strip()
         nama_client = (p.get("nama_client") or "").strip()
+        pemilik = p.get("pemilik", "")
+        label = nama_client or wifi or "(tanpa nama)"
         if not nama_client and not wifi:
             skipped += 1
+            skipped_details.append({
+                "nama_client": label, "nama_wifi": wifi, "pemilik": pemilik,
+                "reason": "Data PSB tidak memiliki Nama Client maupun Nama WiFi",
+            })
             continue
         key = (nama_client.lower(), wifi.lower())
-        if psb_id and (psb_id in existing_ids or psb_id in seen_ids):
+        if psb_id and psb_id in existing_ids:
             skipped += 1
+            skipped_details.append({
+                "nama_client": label, "nama_wifi": wifi, "pemilik": pemilik,
+                "reason": f"Sudah ada tagihan untuk periode {req.periode}",
+            })
             continue
-        if key in existing_keys or key in seen_keys:
+        if psb_id and psb_id in seen_ids:
             skipped += 1
+            skipped_details.append({
+                "nama_client": label, "nama_wifi": wifi, "pemilik": pemilik,
+                "reason": "Duplikat PSB (ID sama muncul lebih dari sekali)",
+            })
+            continue
+        if key in existing_keys:
+            skipped += 1
+            skipped_details.append({
+                "nama_client": label, "nama_wifi": wifi, "pemilik": pemilik,
+                "reason": f"Nama Client + Nama WiFi sudah ada di tagihan periode {req.periode}",
+            })
+            continue
+        if key in seen_keys:
+            skipped += 1
+            skipped_details.append({
+                "nama_client": label, "nama_wifi": wifi, "pemilik": pemilik,
+                "reason": "Duplikat di Data PSB (Nama Client + Nama WiFi sama)",
+            })
             continue
         display_client = nama_client or f"{wifi[:8]}_{int(p.get('harga') or 0)}"
         obj = Payment(
             psb_id=psb_id,
-            pemilik=p.get("pemilik", ""),
+            pemilik=pemilik,
             nama_wifi=wifi,
             nama_client=display_client,
             paket=p.get("paket", ""),
@@ -356,7 +385,7 @@ async def generate_payments(req: GenerateRequest):
     if docs:
         await db.payments.insert_many(docs)
 
-    return {"created": created, "skipped": skipped}
+    return {"created": created, "skipped": skipped, "skipped_details": skipped_details}
 
 
 @api_router.post("/payments/import")
