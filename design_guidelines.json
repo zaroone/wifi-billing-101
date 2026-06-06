@@ -1,0 +1,94 @@
+{
+  "theme": "Light",
+  "archetype": "1 (Organic & Earthy) blended with 4 (Swiss & High-Contrast)",
+  "rationale": "For an Indonesian local business tool (RT/RW Net), the design must evoke trust, financial clarity, and approachability. Ditching the typical tech-dark-mode for a warm, off-white and forest green palette makes it feel grounded, premium, and distinct.",
+  "colors": {
+    "background": "#F8F9FA",
+    "surface": "#FFFFFF",
+    "primary": "#166534",
+    "primary_hover": "#14532D",
+    "secondary": "#E9C46A",
+    "text_main": "#1C1C1C",
+    "text_muted": "#52525B",
+    "border": "#E5E7EB",
+    "success": "#10B981",
+    "success_bg": "#D1FAE5",
+    "danger": "#B45309",
+    "danger_bg": "#FEF3C7"
+  },
+  "typography": {
+    "heading_font": "Outfit, sans-serif",
+    "body_font": "IBM Plex Sans, sans-serif",
+    "rules": {
+      "h1": "text-3xl font-bold tracking-tight text-gray-900",
+      "h2": "text-2xl font-semibold tracking-tight text-gray-900",
+      "h3": "text-lg font-medium tracking-tight text-gray-900",
+      "body": "text-sm text-gray-600 leading-relaxed",
+      "label": "text-xs font-semibold tracking-wider text-gray-500 uppercase"
+    }
+  },
+  "layout_spacing": {
+    "container_padding": "p-6 md:p-8",
+    "widget_gap": "gap-6",
+    "card_padding": "p-6",
+    "border_radius": "rounded-lg"
+  },
+  "surfaces": {
+    "sidebar": "bg-white border-r border-gray-200 w-64 flex-shrink-0 transition-all duration-300",
+    "header": "sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 h-16 flex items-center px-8",
+    "card": "bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+  },
+  "components": {
+    "button": "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
+    "primary_button": "bg-[#166534] text-white hover:bg-[#14532D]",
+    "badge_lunas": "bg-green-100 text-green-800 border border-green-200 px-2 py-0.5 rounded-full text-xs font-medium",
+    "badge_belum": "bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full text-xs font-medium",
+    "table": "w-full text-sm text-left text-gray-500",
+    "table_header": "text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200",
+    "input": "flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#166534] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50"
+  },
+  "icons_library": "@phosphor-icons/react",
+  "media": {
+    "login_background": {
+      "url": "https://images.unsplash.com/photo-1688141585146-1fb4a1358c87?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2ODl8MHwxfHNlYXJjaHwyfHxhYnN0cmFjdCUyMG1pbmltYWxpc3QlMjB0b3BvZ3JhcGh5JTIwdGV4dHVyZXxlbnwwfHx8fDE3ODA3NjU5MzR8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Green abstract minimal texture for the right side of the login screen",
+      "category": "background"
+    },
+    "operator_jamil": {
+      "url": "https://images.unsplash.com/photo-1543132220-3ec99c6094dc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBpbmRvbmVzaWFuJTIwbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzgwNzY1OTM0fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Avatar for Operator Jamil",
+      "category": "avatar"
+    },
+    "operator_idham": {
+      "url": "https://images.unsplash.com/photo-1596502059330-be10388e3ba0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBpbmRvbmVzaWFuJTIwbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzgwNzY1OTM0fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Avatar for Operator Idham",
+      "category": "avatar"
+    },
+    "operator_fachri": {
+      "url": "https://images.unsplash.com/photo-1618593706014-06782cd3bb3b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwzfHxwcm9mZXNzaW9uYWwlMjBpbmRvbmVzaWFuJTIwbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzgwNzY1OTM0fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Avatar for Operator Fachri",
+      "category": "avatar"
+    }
+  },
+  "pages_instructions": {
+    "login": "Split screen layout. Left: Operator selection (use avatar images), PIN input (101), Login button. Right: Full height image (login_background) with a glassmorphism overlay containing a tagline 'Sistem Manajemen Terpadu RT/RW Net'.",
+    "dashboard": "Use 'Control Room Grid' (grid-cols-4). Top row: 4 Stat cards (Total Pelanggan, Total Bayar, Sudah Bayar, Belum Bayar). Middle: Recent activity feed spanning col-span-2 or 3, Quick actions in remaining space. No shadows, 1px borders.",
+    "data_psb": "Full width CRUD table. Put Search bar and 'Tambah Pelanggan' CTA aligned top-right. Add 'Hapus Semua' as a subtle but accessible secondary button (needs password prompt modal). Column headers should be uppercase, tracking-wider.",
+    "verifikasi_pembayaran": "Toolbar at top with Month/Year dropdown and primary 'Generate' button. Below, the payments table with LUNAS/BELUM badges. Edit/Delete icons at the end of rows.",
+    "statistik": "4 Chart widgets using Recharts. Use primary green for main data bars, and muted amber for secondary/warning data. Maintain ample padding (p-6) inside chart cards.",
+    "monitoring": "Empty state by default until user clicks the massive primary 'CEK PELANGGAN BELUM BAYAR' button. Once clicked, display an overdue list grouped by 'Pemilik' (Owner)."
+  },
+  "accessibility_and_testing": {
+    "data_testid_rules": "All interactive elements MUST have data-testid. Examples: data-testid='login-submit-button', data-testid='operator-select-jamil'.",
+    "contrast": "Ensure text contrast on buttons and badges meets APCA standards. Do not rely solely on color for LUNAS/BELUM (include text and icons)."
+  },
+  "instructions_to_main_agent": [
+    "Install required fonts: 'Outfit' (Headings) and 'IBM Plex Sans' (Body) from Google Fonts.",
+    "Install and use @phosphor-icons/react for all icons.",
+    "Build the dashboard layout with a collapsible sidebar and sticky glassmorphism header.",
+    "Use Shadcn UI components but override the default rounding (use rounded-md) and remove drop-shadows (use flat 1px borders).",
+    "Replace all standard blue/indigo defaults with the Primary Green (#166534).",
+    "Use the provided media URLs for operator avatars on the login page to add a premium touch.",
+    "Ensure all user-facing labels and data are in Indonesian as requested."
+  ]
+}
