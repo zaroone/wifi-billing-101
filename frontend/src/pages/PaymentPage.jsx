@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   Pencil,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -36,6 +37,7 @@ import {
   deletePayment,
   generatePayments,
   importPayments,
+  deleteAllPayments,
 } from "@/lib/api";
 import { fmtRp, currentPeriod, formatPeriodLabel, csvParseLine } from "@/lib/format";
 import { useAuth } from "@/context/AuthContext";
@@ -79,6 +81,9 @@ export default function PaymentPage() {
   const [csvContent, setCsvContent] = useState("");
   const [importOpen, setImportOpen] = useState(false);
   const [importText, setImportText] = useState("");
+  const [delAllOpen, setDelAllOpen] = useState(false);
+  const [delAllPw, setDelAllPw] = useState("");
+  const [delAllLoading, setDelAllLoading] = useState(false);
 
   const loadPeriods = async () => {
     try {
@@ -184,6 +189,22 @@ export default function PaymentPage() {
     }
   };
 
+  const doDeleteAll = async () => {
+    setDelAllLoading(true);
+    try {
+      const r = await deleteAllPayments(delAllPw);
+      toast.success(`${r.deleted} data pembayaran dihapus`);
+      setDelAllOpen(false);
+      setDelAllPw("");
+      load();
+      loadPeriods();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || "Password salah");
+    } finally {
+      setDelAllLoading(false);
+    }
+  };
+
   const exportCsv = () => {
     if (data.length === 0) {
       toast.error("Tidak ada data");
@@ -285,6 +306,14 @@ export default function PaymentPage() {
             data-testid="payment-import-button"
           >
             <Upload className="w-4 h-4 mr-1.5" /> Import
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setDelAllOpen(true)}
+            data-testid="payment-delete-all-button"
+            className="border-[#B45309]/40 text-[#B45309] hover:bg-[#FEF3C7] hover:text-[#92400E]"
+          >
+            <AlertTriangle className="w-4 h-4 mr-1.5" /> Hapus Semua
           </Button>
         </div>
       </div>
@@ -588,6 +617,40 @@ export default function PaymentPage() {
               className="bg-[#166534] hover:bg-[#14532D] text-white"
             >
               Import
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Delete all confirm */}
+      <Dialog open={delAllOpen} onOpenChange={setDelAllOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-[#B45309]">
+              <AlertTriangle className="w-5 h-5" /> Hapus Semua Pembayaran?
+            </DialogTitle>
+            <DialogDescription>
+              Tindakan ini akan menghapus <b>seluruh data pembayaran di semua periode</b> dan tidak bisa dibatalkan. Masukkan PIN untuk konfirmasi.
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            data-testid="payment-delete-all-password"
+            type="password"
+            placeholder="PIN"
+            value={delAllPw}
+            onChange={(e) => setDelAllPw(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && doDeleteAll()}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDelAllOpen(false)}>
+              Batal
+            </Button>
+            <Button
+              data-testid="payment-do-delete-all"
+              onClick={doDeleteAll}
+              disabled={delAllLoading}
+              className="bg-[#B45309] hover:bg-[#92400E] text-white"
+            >
+              {delAllLoading ? "Menghapus…" : "Hapus Semua"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -294,6 +294,14 @@ async def delete_payment(pay_id: str):
     return {"ok": True}
 
 
+@api_router.post("/payments/delete-all")
+async def delete_all_payments(req: DeleteAllRequest):
+    if req.password != DELETE_ALL_PASSWORD:
+        raise HTTPException(status_code=401, detail="Password salah")
+    res = await db.payments.delete_many({})
+    return {"ok": True, "deleted": res.deleted_count}
+
+
 @api_router.post("/payments/generate")
 async def generate_payments(req: GenerateRequest):
     if req.password != GENERATE_PASSWORD:

@@ -39,6 +39,8 @@ export const generatePayments = (periode, password) =>
   api.post("/payments/generate", { periode, password }).then((r) => r.data);
 export const importPayments = (items) =>
   api.post("/payments/import", { items }).then((r) => r.data);
+export const deleteAllPayments = (password) =>
+  api.post("/payments/delete-all", { password }).then((r) => r.data);
 
 // === Stats ===
 export const getStats = (periode) =>
