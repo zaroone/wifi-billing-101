@@ -301,31 +301,48 @@ async def generate_payments(req: GenerateRequest):
 
     active_psb = await db.psb.find({"status_client": "aktif"}, {"_id": 0}).to_list(5000)
     existing = await db.payments.find(
-        {"periode": req.periode}, {"nama_wifi": 1, "_id": 0}
+        {"periode": req.periode}, {"psb_id": 1, "nama_client": 1, "nama_wifi": 1, "_id": 0}
     ).to_list(5000)
-    existing_wifi = {(e.get("nama_wifi") or "").strip() for e in existing}
+    existing_ids = {(e.get("psb_id") or "").strip() for e in existing if e.get("psb_id")}
+    existing_keys = {
+        ((e.get("nama_client") or "").strip().lower(), (e.get("nama_wifi") or "").strip().lower())
+        for e in existing
+    }
 
     created = 0
     skipped = 0
     docs = []
+    seen_ids = set()
+    seen_keys = set()
     for p in active_psb:
+        psb_id = (p.get("id") or "").strip()
         wifi = (p.get("nama_wifi") or "").strip()
-        if not wifi or wifi in existing_wifi:
+        nama_client = (p.get("nama_client") or "").strip()
+        if not nama_client and not wifi:
             skipped += 1
             continue
-        nama_client = (p.get("nama_client") or "").strip() or f"{wifi[:8]}_{int(p.get('harga') or 0)}"
+        key = (nama_client.lower(), wifi.lower())
+        if psb_id and (psb_id in existing_ids or psb_id in seen_ids):
+            skipped += 1
+            continue
+        if key in existing_keys or key in seen_keys:
+            skipped += 1
+            continue
+        display_client = nama_client or f"{wifi[:8]}_{int(p.get('harga') or 0)}"
         obj = Payment(
-            psb_id=p.get("id", ""),
+            psb_id=psb_id,
             pemilik=p.get("pemilik", ""),
             nama_wifi=wifi,
-            nama_client=nama_client,
+            nama_client=display_client,
             paket=p.get("paket", ""),
             harga=float(p.get("harga") or 0),
             periode=req.periode,
             status_bayar="BELUM",
         )
         docs.append(obj.model_dump())
-        existing_wifi.add(wifi)
+        if psb_id:
+            seen_ids.add(psb_id)
+        seen_keys.add(key)
         created += 1
 
     if docs:
