@@ -138,7 +138,7 @@ export default function AppLayout() {
           </h1>
           <div className="ml-auto flex items-center gap-3 text-xs text-[#52525B]">
             <span className="hidden sm:inline font-mono-display tracking-wider">
-              MasterF4 v2.0
+              MasterF4 v3.0
             </span>
             <span className="hidden sm:inline">•</span>
             <span className="hidden sm:inline">Design by Idham @2026</span>
