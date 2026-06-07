@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import {
   RefreshCw,
   Download,
@@ -86,34 +86,37 @@ export default function PaymentPage() {
   const [delAllLoading, setDelAllLoading] = useState(false);
   const [genReport, setGenReport] = useState(null); // {created, skipped, skipped_details}
 
-  const loadPeriods = async () => {
+  const loadPeriods = useCallback(async () => {
     try {
       const p = await listPeriods();
       const cur = currentPeriod();
       const all = Array.from(new Set([cur, ...p])).sort().reverse();
       setPeriods(all);
-    } catch {}
-  };
+    } catch (e) {
+      console.error("listPeriods failed", e);
+    }
+  }, []);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const d = await listPayments(periode);
       setData(d || []);
     } catch (e) {
+      console.error("listPayments failed", e);
       toast.error("Gagal memuat data");
     } finally {
       setLoading(false);
     }
-  };
+  }, [periode]);
 
   useEffect(() => {
     loadPeriods();
-  }, []);
+  }, [loadPeriods]);
 
   useEffect(() => {
     load();
-  }, [periode]);
+  }, [load]);
 
   const filtered = useMemo(() => {
     let arr = data;

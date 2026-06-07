@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Plus,
   Search,
@@ -83,21 +83,22 @@ export default function PsbPage() {
   const [csvOpen, setCsvOpen] = useState(false);
   const [csvContent, setCsvContent] = useState("");
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const d = await listPsb();
       setData(d || []);
     } catch (e) {
+      console.error("listPsb failed", e);
       toast.error("Gagal memuat data");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     load();
-  }, []);
+  }, [load]);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();

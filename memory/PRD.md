@@ -36,6 +36,11 @@ Rewrite an existing single-page HTML/JS RT/RW Net dashboard into a full-stack we
 ## Changelog
 - **2026-02** — Full-stack app sudah ter-implement (login, dashboard, PSB, payment, stats, monitor).
 - **2026-02** — **Bug fix**: tombol Generate hanya menghasilkan 1 data. Root cause: dedup logic memakai `nama_wifi` saja, padahal banyak PSB punya `nama_wifi="-"` yang sama. Fix di `/app/backend/server.py` → dedup pakai `psb_id` + composite key `(nama_client, nama_wifi)`. Diverifikasi: generate menghasilkan 13/13 data, generate ulang 0 created (idempoten).
+- **2026-02 (P0 Code Quality Fixes)**:
+  - **Security**: Hardcoded secrets (`USER_PASSWORD`, `DELETE_ALL_PASSWORD`, `GENERATE_PASSWORD`, `VALID_USERS`) dipindah dari `server.py` ke `backend/.env`. Server kini load via `os.environ[...]`.
+  - **React Hooks**: `load`/`loadPeriods` di `PsbPage.jsx` & `PaymentPage.jsx` dibungkus `useCallback`, ditambahkan ke dependency array `useEffect` (no more stale closures).
+  - **Empty catch**: `PaymentPage.jsx` `loadPeriods` catch block kini log error ke `console.error` (sebelumnya silent).
+  - **Verifikasi**: login OK (Jamil/101), Dashboard render (369 pelanggan), Payment page render (369 tagihan), wrong-password endpoints menolak.
 
 ## Roadmap / Backlog
 - P1: Testing end-to-end komprehensif (testing_agent_v3) untuk semua flow.

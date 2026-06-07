@@ -146,10 +146,14 @@ class BulkPaymentImport(BaseModel):
 
 
 # ===== AUTH =====
-VALID_USERS = {"jamil", "idham", "fachri"}
-USER_PASSWORD = "101"
-DELETE_ALL_PASSWORD = "251269"
-GENERATE_PASSWORD = "101404"
+VALID_USERS = {
+    u.strip().lower()
+    for u in os.environ['VALID_USERS'].split(',')
+    if u.strip()
+}
+USER_PASSWORD = os.environ['USER_PASSWORD']
+DELETE_ALL_PASSWORD = os.environ['DELETE_ALL_PASSWORD']
+GENERATE_PASSWORD = os.environ['GENERATE_PASSWORD']
 
 
 @api_router.post("/auth/login")
