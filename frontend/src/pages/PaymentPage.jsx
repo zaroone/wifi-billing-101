@@ -42,6 +42,32 @@ import {
 import { fmtRp, currentPeriod, formatPeriodLabel, csvParseLine } from "@/lib/format";
 import { useAuth } from "@/context/AuthContext";
 
+const MONTH_OPTIONS = [
+  { v: "01", label: "Januari" },
+  { v: "02", label: "Februari" },
+  { v: "03", label: "Maret" },
+  { v: "04", label: "April" },
+  { v: "05", label: "Mei" },
+  { v: "06", label: "Juni" },
+  { v: "07", label: "Juli" },
+  { v: "08", label: "Agustus" },
+  { v: "09", label: "September" },
+  { v: "10", label: "Oktober" },
+  { v: "11", label: "November" },
+  { v: "12", label: "Desember" },
+];
+
+const buildYearOptions = (periods) => {
+  const years = new Set();
+  const now = new Date().getFullYear();
+  for (let y = now - 2; y <= now + 1; y++) years.add(String(y));
+  periods.forEach((p) => {
+    const y = (p || "").split("-")[0];
+    if (y) years.add(y);
+  });
+  return Array.from(years).sort().reverse();
+};
+
 const StatusBadge = ({ status }) => (
   <span
     className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider border ${
@@ -283,17 +309,38 @@ export default function PaymentPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2 items-center">
-          <Select value={periode} onValueChange={setPeriode}>
+          <Select
+            value={periode.split("-")[1]}
+            onValueChange={(m) => setPeriode(`${periode.split("-")[0]}-${m}`)}
+          >
             <SelectTrigger
-              data-testid="payment-period-select"
-              className="w-[180px] bg-white"
+              data-testid="payment-month-select"
+              className="w-[140px] bg-white"
             >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {periods.map((p) => (
-                <SelectItem key={p} value={p}>
-                  {formatPeriodLabel(p)}
+              {MONTH_OPTIONS.map((m) => (
+                <SelectItem key={m.v} value={m.v}>
+                  {m.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
+            value={periode.split("-")[0]}
+            onValueChange={(y) => setPeriode(`${y}-${periode.split("-")[1]}`)}
+          >
+            <SelectTrigger
+              data-testid="payment-year-select"
+              className="w-[110px] bg-white"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {buildYearOptions(periods).map((y) => (
+                <SelectItem key={y} value={y}>
+                  {y}
                 </SelectItem>
               ))}
             </SelectContent>

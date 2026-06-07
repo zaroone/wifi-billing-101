@@ -41,6 +41,7 @@ Rewrite an existing single-page HTML/JS RT/RW Net dashboard into a full-stack we
   - **React Hooks**: `load`/`loadPeriods` di `PsbPage.jsx` & `PaymentPage.jsx` dibungkus `useCallback`, ditambahkan ke dependency array `useEffect` (no more stale closures).
   - **Empty catch**: `PaymentPage.jsx` `loadPeriods` catch block kini log error ke `console.error` (sebelumnya silent).
   - **Verifikasi**: login OK (Jamil/101), Dashboard render (369 pelanggan), Payment page render (369 tagihan), wrong-password endpoints menolak.
+- **2026-02 (Feature)**: **Year+Month picker** di Verifikasi Pembayaran. Dropdown periode tunggal diganti dengan dua dropdown (Bulan: Januari-Desember + Tahun: ±2 tahun current). Sekarang bisa pilih periode apa pun bebas (termasuk bulan kosong) lalu Generate. Catatan P1 server.py `is None` ditinjau ulang → false-positive (PEP 8: `is None` adalah idiom yang benar).
 
 ## Roadmap / Backlog
 - P1: Testing end-to-end komprehensif (testing_agent_v3) untuk semua flow.
